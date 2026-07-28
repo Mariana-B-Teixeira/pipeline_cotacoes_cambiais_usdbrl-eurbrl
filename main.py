@@ -1,0 +1,148 @@
+# Utilização da biblioteca requests e sqlite3 do Python.
+import requests
+import sqlite3
+
+def main():
+    
+        dados_brutos = extrair()
+        if dados_brutos == None:
+              print("Não foi possível obter os dados no momento.")
+        else:
+            dados_tratados = transformar(dados_brutos)
+            carregar(dados_tratados)
+
+def extrair():
+    try:
+    # Colocando o URL da API pública em uma variável.
+        url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL"
+
+    # Obtendo dados que estão na URL com uma requisição HTTP do tipo GET.       
+        resposta = requests.get(url)
+
+        resposta.raise_for_status()
+
+        #Transforma em json.
+        dados = resposta.json()
+        
+        print(dados)
+        
+        print(" ")
+        
+        return dados
+
+    except requests.exceptions.ConnectionError:
+            print("Erro de conexão.")
+            return None
+    except requests.exceptions.HTTPError:
+            print("Resposta HTTP inválida")
+            return None
+    except requests.exceptions.Timeout:
+            print("Requsição excedeu tempo limite")
+            return None
+    except requests.exceptions.TooManyRedirects:
+            print("Número máximo de redirecionamentos excedido")
+            return None
+
+def transformar(dados):
+    # Cotação de compra do dólar.
+    print("------COMPRA DO DÓLAR:------")
+    print(dados["USDBRL"]["bid"])
+    dolar_compra = dados["USDBRL"]["bid"]
+    dolar_compra = float(dolar_compra)
+
+    print(" ")
+
+    # Cotação de venda do dólar.
+    print("------VENDA DO DÓLAR:------")
+    print(dados["USDBRL"]["ask"])
+    dolar_venda = dados["USDBRL"]["ask"]
+    dolar_venda = float(dolar_venda)
+
+    print(" ")
+
+    # Data do valor:
+    print("-----------DATA:-----------")
+
+    print(dados["USDBRL"]["create_date"])
+    dolar_data = dados["USDBRL"]["create_date"][0:10]
+
+    print(" ")
+
+    print("---------------------------")
+
+    print(" ")
+
+    # Cotação de compra do euro.
+    print("------COMPRA DO EURO:------")
+    print(dados["EURBRL"]["bid"])
+    euro_compra = dados["EURBRL"]["bid"]
+    euro_compra = float(euro_compra)
+
+    print(" ")
+
+    # Cotação de venda do euro.
+    print("------VENDA DO EURO:------")
+    print(dados["EURBRL"]["ask"])
+    euro_venda = dados["EURBRL"]["ask"]
+    euro_venda = float(euro_venda)
+
+    print(" ")
+
+    # Data do valor:
+    print("-----------DATA:-----------")
+
+    print(dados["EURBRL"]["create_date"])
+    euro_data = dados["EURBRL"]["create_date"][0:10]
+
+    print(" ")
+
+    valores = [
+            {"moeda": "dolar", "compra": dolar_compra, "venda": dolar_venda, "data": dolar_data},
+            {"moeda": "euro", "compra": euro_compra, "venda": euro_venda, "data": euro_data}
+        ]
+    
+    return valores
+    
+def carregar(valores):
+
+    con = sqlite3.connect("cambio.db")
+
+    cur = con.cursor()
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS cambio
+        (
+        moeda TEXT, 
+        valor_de_compra REAL, 
+        valor_de_venda REAL, 
+        data TEXT,
+        UNIQUE(moeda, data)
+        )
+    """)
+
+
+    for i in valores:
+        cur.execute(
+            "INSERT OR IGNORE INTO cambio (moeda, valor_de_compra, valor_de_venda, data) VALUES (?,?,?,?)", #Placeholder do sqlite3
+            (
+                i["moeda"],
+                i["compra"],
+                i["venda"],
+                i["data"]
+            )   
+        )
+    
+    cur.execute("""
+        SELECT * 
+        FROM cambio
+    """)
+
+    linhas = cur.fetchall()
+
+    for linha in linhas:
+        print(linha)
+
+    con.commit()
+    con.close()
+
+main()
