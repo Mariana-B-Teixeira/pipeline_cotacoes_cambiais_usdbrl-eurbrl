@@ -63,6 +63,12 @@ O script grava as cotações do dia em `cambio.db`, na mesma pasta, ignorando au
  
 ---
  
+## 🔍 Visualizando os dados
+ 
+O arquivo `cambio.db` pode ser inspecionado com qualquer cliente SQLite, como o [DBeaver](https://dbeaver.io/) — basta conectar como um banco SQLite e apontar para o arquivo gerado.
+ 
+---
+ 
 ## 🌐 Fonte dos dados
  
 [AwesomeAPI](https://docs.awesomeapi.com.br/api-de-moedas) — API pública e gratuita de cotações.
