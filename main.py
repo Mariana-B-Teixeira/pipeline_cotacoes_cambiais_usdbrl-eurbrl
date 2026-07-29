@@ -1,6 +1,9 @@
-# Utilização da biblioteca requests e sqlite3 do Python.
-import requests
-import sqlite3
+import os # Biblioteca nativa do Python para se comunicar com o Sistema Operacional
+import requests # Biblioteca de requisições  Python para usar na API
+import psycopg # Permite que o Python se comunique com o PostgreSQL
+from dotenv import load_dotenv # Biblioteca externa que lê arquiv .env
+
+load_dotenv() # Pega .env do disco e coloca na memória RAM para trabalhar com esse ambiente
 
 def main():
     
@@ -104,26 +107,37 @@ def transformar(dados):
     return valores
     
 def carregar(valores):
+ 
+    # Obtém informações de ambiente do .env
+    user = os.getenv("POSTGRES_USER").strip()
+    password = os.getenv("POSTGRES_PASSWORD").strip()
+    dbname = os.getenv("POSTGRES_DB").strip()
+    host = os.getenv("POSTGRES_HOST").strip()
+    port = os.getenv("POSTGRES_PORT").strip()
 
-    con = sqlite3.connect("cambio.db")
+    # Formato URI de conecção com o banco de dados PostgreSQL, para evitar erros.
+    db_url = f"postgresql://{user}:{password}@{host}:{port}/{dbname}"
+
+    # Conexão com o banco de dados
+    con = psycopg.connect(db_url)
 
     cur = con.cursor()
 
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS cambio
-        (
-        moeda TEXT, 
-        valor_de_compra REAL, 
-        valor_de_venda REAL, 
-        data TEXT,
-        UNIQUE(moeda, data)
-        )
-    """)
-
-
+        CREATE TABLE IF NOT EXISTS cambio
+            (
+            moeda TEXT, 
+            valor_de_compra REAL, 
+            valor_de_venda REAL, 
+            data TEXT,
+            UNIQUE(moeda, data)
+            )
+        """)
+    
+    
     for i in valores:
         cur.execute(
-            "INSERT OR IGNORE INTO cambio (moeda, valor_de_compra, valor_de_venda, data) VALUES (?,?,?,?)", #Placeholder do sqlite3
+            "INSERT INTO cambio (moeda, valor_de_compra, valor_de_venda, data) VALUES (%s, %s, %s, %s) ON CONFLICT (moeda, data) DO NOTHING", #Placeholder do psycopg2 e trata indempotência, 
             (
                 i["moeda"],
                 i["compra"],
@@ -131,18 +145,20 @@ def carregar(valores):
                 i["data"]
             )   
         )
-    
+
+
     cur.execute("""
-        SELECT * 
-        FROM cambio
-    """)
-
+            SELECT * 
+            FROM cambio
+        """)
+    
     linhas = cur.fetchall()
-
+    
     for linha in linhas:
         print(linha)
 
     con.commit()
     con.close()
+    cur.close()
 
 main()
