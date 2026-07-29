@@ -6,8 +6,10 @@
  
 Pipeline **ETL** em Python que busca cotações de câmbio (Dólar e Euro em relação ao Real) através de uma API pública, trata os dados e os persiste em um banco de dados.
  
-> 🎯 Este projeto foi construído para fortalecer meus estudos em **Python, SQL e engenharia de pipelines de dados**, aplicando na prática conceitos de ETL (*Extract, Transform, Load*), tratamento de erros e organização de código.
- 
+> 🎯 Este projeto foi construído para fortalecer meus estudos em Python, SQL e Engenharia de Pipelines de Dados, aplicando na prática conceitos de ETL (Extract, Transform, Load), tratamento de erros e organização de código.
+>
+> ✨ Além disso, utilizarei este mesmo script como base para implementar ferramentas como PostgreSQL, Docker e Apache Airflow. O foco principal não é a complexidade das regras de negócio, mas sim a construção de uma arquitetura de dados moderna, escalável e produtiva (Production-Ready Architecture) utilizando as principais tecnologias do mercado.
+
 ---
  
 ## ⚙️ O que o projeto faz
