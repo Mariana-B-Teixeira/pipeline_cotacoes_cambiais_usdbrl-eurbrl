@@ -47,7 +47,7 @@ Pipeline **ETL** em Python que busca cotações de câmbio (Dólar e Euro em rel
 ### 1. Instalar dependências
 ```bash
 pip install requests psycopg "psycopg[binary]" python-dotenv
-
+````
 ---
 
 ⭐ Desenvolvido por **Mariana B. Teixeira**
