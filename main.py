@@ -115,7 +115,7 @@ def carregar(valores):
     host = os.getenv("POSTGRES_HOST").strip()
     port = os.getenv("POSTGRES_PORT").strip()
 
-    # Formato URI de conecção com o banco de dados PostgreSQL, para evitar erros.
+    # Formato URI de conexão com o banco de dados PostgreSQL, para evitar erros.
     db_url = f"postgresql://{user}:{password}@{host}:{port}/{dbname}"
 
     # Conexão com o banco de dados
@@ -158,7 +158,7 @@ def carregar(valores):
         print(linha)
 
     con.commit()
-    con.close()
     cur.close()
+    con.close()
 
 main()
