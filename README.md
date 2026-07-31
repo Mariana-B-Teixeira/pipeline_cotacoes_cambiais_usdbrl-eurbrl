@@ -2,11 +2,12 @@
 
 ![Python](https://img.shields.io/badge/Python-3-blue?logo=python&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-database-blue?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-container-blue?logo=docker)
 ![Status](https://img.shields.io/badge/status-em%20evolução-yellow)
 
 Pipeline **ETL** em Python que busca cotações de câmbio (Dólar e Euro em relação ao Real) através de uma API pública, trata os dados e os persiste em um banco de dados relacional.
 
-> 🎯 Este projeto foi construído para fortalecer meus estudos em **Python, SQL e engenharia de pipelines de dados**, aplicando na prática conceitos de ETL (*Extract, Transform, Load*), tratamento de erros, variáveis de ambiente e organização de código.
+> 🎯 Este projeto foi construído para fortalecer meus estudos em **Python, SQL, Docker e engenharia de pipelines de dados**, aplicando na prática conceitos de ETL (*Extract, Transform, Load*), tratamento de erros, variáveis de ambiente, containerização e organização de código.
 
 ---
 
@@ -27,7 +28,7 @@ Pipeline **ETL** em Python que busca cotações de câmbio (Dólar e Euro em rel
 - [x] Transformação dos dados (tipos e formato de data)
 - [x] Código organizado em funções desacopladas (`extrair`, `transformar`, `carregar`)
 - [x] 🐘 Migração para PostgreSQL com gerenciamento de variáveis de ambiente (`.env`)
-- [ ] 🐳 Containerização com Docker
+- [x] 🐳 Containerização com Docker
 - [ ] 🔗 Orquestração com Airflow
 
 ---
@@ -39,15 +40,29 @@ Pipeline **ETL** em Python que busca cotações de câmbio (Dólar e Euro em rel
 - [`psycopg`](https://www.psycopg.org/psycopg3/docs/) — driver nativo para PostgreSQL
 - [`python-dotenv`](https://pypi.org/project/python-dotenv/) — gerenciamento de variáveis de ambiente
 - **PostgreSQL** — banco de dados relacional
+- **Docker** — containerização da aplicação
 
 ---
 
 ## 🚀 Como rodar
 
-### 1. Instalar dependências
-```bash
-pip install requests psycopg "psycopg[binary]" python-dotenv
-````
+### 📋 Pré-requisitos
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando.
+- Instância do **PostgreSQL** em execução.
+- Arquivo de configuração de variáveis de ambiente `.env` criado a partir do `.env.example`.
+
+> 💡 **Nota sobre a conexão com o banco:**  
+> Se o seu PostgreSQL estiver rodando na sua máquina host (fora do container), configure no `.env` o parâmetro de host como:  
+> `POSTGRES_HOST=host.docker.internal`
+
 ---
 
-⭐ Desenvolvido por **Mariana B. Teixeira**
+### Opção 1: Executando via Docker (Recomendado) 🐳
+
+1. **Construir a imagem Docker:**
+   ```bash
+   docker build -t projeto-cotacao .
+
+   ---
+
+⭐ Desenvolvido por **Mariana B. Teixeira** 
