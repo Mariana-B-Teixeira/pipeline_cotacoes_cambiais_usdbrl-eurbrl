@@ -8,7 +8,7 @@ load_dotenv() # Pega .env do disco e coloca na memória RAM para trabalhar com e
 def main():
     
         dados_brutos = extrair()
-        if dados_brutos == None:
+        if dados_brutos is None:
               print("Não foi possível obter os dados no momento.")
         else:
             dados_tratados = transformar(dados_brutos)
