@@ -59,11 +59,11 @@ Como o script Python será executado **dentro do container Docker**, defina o va
 
 * **PostgreSQL rodando no seu computador (Host):**
   ```env
-  POSTGRES_HOST=localhost
+  POSTGRES_HOST=host.docker.internal
   ```
 * **PostgreSQL rodando em outro container Docker (na mesma rede):**
   ```env
-  POSTGRES_HOST=host.docker.internal
+  POSTGRES_HOST=nome_do_servico_postgres
   ```
 
 ---

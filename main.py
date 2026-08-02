@@ -146,12 +146,6 @@ def carregar(valores):
                     )   
                 )
 
-            cur.execute("SELECT * FROM cambio")
-            
-            linhas = cur.fetchall()
-            for linha in linhas:
-                print(linha)
-
         # O 'con.commit()' manual não é mais necessário aqui!
         # O 'with con' faz o commit automaticamente se não houver erros.
 
