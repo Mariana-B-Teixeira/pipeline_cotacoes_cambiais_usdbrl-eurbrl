@@ -44,25 +44,44 @@ Pipeline **ETL** em Python que busca cotações de câmbio (Dólar e Euro em rel
 
 ---
 
-## 🚀 Como rodar
+## ⚙️ Como rodar via Docker 🐳
 
 ### 📋 Pré-requisitos
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e rodando.
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado e em execução.
 - Instância do **PostgreSQL** em execução.
-- Arquivo de configuração de variáveis de ambiente `.env` criado a partir do `.env.example`.
-
-> 💡 **Nota sobre a conexão com o banco:**  
-> Se o seu PostgreSQL estiver rodando na sua máquina host (fora do container), configure no `.env` o parâmetro de host como:  
-> `POSTGRES_HOST=host.docker.internal`
+- Arquivo de variáveis de ambiente `.env` criado na raiz do projeto (baseado no `.env.example`).
 
 ---
 
-### Opção 1: Executando via Docker (Recomendado) 🐳
+### 1️⃣ Configuração das Variáveis de Ambiente (`.env`)
+
+Como o script Python será executado **dentro do container Docker**, defina o valor da variável `POSTGRES_HOST` no arquivo `.env` de acordo com a sua infraestrutura:
+
+* **PostgreSQL rodando no seu computador (Host):**
+  ```env
+  POSTGRES_HOST=localhost
+  ```
+* **PostgreSQL rodando em outro container Docker (na mesma rede):**
+  ```env
+  POSTGRES_HOST=host.docker.internal
+  ```
+
+---
+
+### 2️⃣ Construção e Execução
 
 1. **Construir a imagem Docker:**
+   No terminal, na raiz do projeto, execute:
    ```bash
    docker build -t projeto-cotacao .
+   ```
 
-   ---
+2. **Executar a pipeline:**
+   Rode o container passando o arquivo `.env`:
+   ```bash
+   docker run --env-file .env projeto-cotacao
+   ```
 
-⭐ Desenvolvido por **Mariana B. Teixeira** 
+---
+
+⭐ Desenvolvido por **Mariana B. Teixeira**

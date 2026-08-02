@@ -107,7 +107,6 @@ def transformar(dados):
     return valores
     
 def carregar(valores):
- 
     # Obtém informações de ambiente do .env
     user = os.getenv("POSTGRES_USER").strip()
     password = os.getenv("POSTGRES_PASSWORD").strip()
@@ -115,50 +114,45 @@ def carregar(valores):
     host = os.getenv("POSTGRES_HOST").strip()
     port = os.getenv("POSTGRES_PORT").strip()
 
-    # Formato URI de conexão com o banco de dados PostgreSQL, para evitar erros.
+    # Formato URI de conexão com o banco de dados PostgreSQL
     db_url = f"postgresql://{user}:{password}@{host}:{port}/{dbname}"
 
-    # Conexão com o banco de dados
-    con = psycopg.connect(db_url)
+    # O 'with' na conexão gerencia a transação (commit/rollback) e fecha a conexão ao final
+    # O 'with' no cursor garante que o cursor seja fechado após o bloco
+    with psycopg.connect(db_url) as con:
+        with con.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS cambio (
+                    moeda TEXT, 
+                    valor_de_compra REAL, 
+                    valor_de_venda REAL, 
+                    data TEXT,
+                    UNIQUE(moeda, data)
+                )
+            """)
+            
+            for i in valores:
+                cur.execute(
+                    """
+                    INSERT INTO cambio (moeda, valor_de_compra, valor_de_venda, data) 
+                    VALUES (%s, %s, %s, %s) 
+                    ON CONFLICT (moeda, data) DO NOTHING
+                    """,
+                    (
+                        i["moeda"],
+                        i["compra"],
+                        i["venda"],
+                        i["data"]
+                    )   
+                )
 
-    cur = con.cursor()
+            cur.execute("SELECT * FROM cambio")
+            
+            linhas = cur.fetchall()
+            for linha in linhas:
+                print(linha)
 
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS cambio
-            (
-            moeda TEXT, 
-            valor_de_compra REAL, 
-            valor_de_venda REAL, 
-            data TEXT,
-            UNIQUE(moeda, data)
-            )
-        """)
-    
-    
-    for i in valores:
-        cur.execute(
-            "INSERT INTO cambio (moeda, valor_de_compra, valor_de_venda, data) VALUES (%s, %s, %s, %s) ON CONFLICT (moeda, data) DO NOTHING", #Placeholder do psycopg2 e trata indempotência, 
-            (
-                i["moeda"],
-                i["compra"],
-                i["venda"],
-                i["data"]
-            )   
-        )
-
-
-    cur.execute("""
-            SELECT * 
-            FROM cambio
-        """)
-    
-    linhas = cur.fetchall()
-    
-    for linha in linhas:
-        print(linha)
-
-    con.commit()
-    cur.close()
-    con.close()
+        # O 'con.commit()' manual não é mais necessário aqui!
+        # O 'with con' faz o commit automaticamente se não houver erros.
 
 main()
