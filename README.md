@@ -1,6 +1,6 @@
 # 💱 Pipeline de Cotações Cambiais (USD/BRL - EUR/BRL)
 
-Pipeline ETL em Python que busca cotações de câmbio (Dólar e Euro em comparação ao Real) através de uma API pública, trata os dados e os persiste em um banco de dados relacional.
+Pipeline ETL em Python que busca cotações de câmbio (Dólar e Euro em comparação ao Real) por meio de uma API pública, trata os dados e os persiste em um banco de dados relacional.
 
 🎯 Este projeto foi construído para fortalecer meus estudos em **Python**, **SQL** e **engenharia de pipelines de dados**, aplicando na prática conceitos de ETL (Extract, Transform, Load), tratamento de erros, variáveis de ambiente, containerização e organização de código.
 
